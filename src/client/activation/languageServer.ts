@@ -3,18 +3,24 @@
 
 import { inject, injectable } from 'inversify';
 import * as path from 'path';
-import { CancellationToken, CompletionContext, OutputChannel, Position,
-     TextDocument, Uri } from 'vscode';
-import { Disposable, LanguageClient, LanguageClientOptions,
-    ProvideCompletionItemsSignature, ServerOptions } from 'vscode-languageclient';
+import {
+    CancellationToken, CompletionContext, OutputChannel, Position,
+    TextDocument, Uri
+} from 'vscode';
+import {
+    Disposable, LanguageClient, LanguageClientOptions,
+    ProvideCompletionItemsSignature, ServerOptions
+} from 'vscode-languageclient';
 import { IApplicationShell, ICommandManager, IWorkspaceService } from '../common/application/types';
 import { PythonSettings } from '../common/configSettings';
 import { isTestExecution, STANDARD_OUTPUT_CHANNEL } from '../common/constants';
 import { createDeferred, Deferred } from '../common/helpers';
 import { IFileSystem, IPlatformService } from '../common/platform/types';
 import { StopWatch } from '../common/stopWatch';
-import { BANNER_NAME_LS_SURVEY, IConfigurationService, IExtensionContext, ILogger,
-    IOutputChannel, IPythonExtensionBanner, IPythonSettings } from '../common/types';
+import {
+    BANNER_NAME_LS_SURVEY, IConfigurationService, IExtensionContext, ILogger,
+    IOutputChannel, IPythonExtensionBanner, IPythonSettings
+} from '../common/types';
 import { IServiceContainer } from '../ioc/types';
 import {
     PYTHON_LANGUAGE_SERVER_DOWNLOADED,
@@ -27,6 +33,7 @@ import { LanguageServerDownloader } from './downloader';
 import { InterpreterData, InterpreterDataService } from './interpreterDataService';
 import { PlatformData } from './platformData';
 import { ProgressReporting } from './progress';
+import { SymbolProvider } from './symbolProvider';
 import { IExtensionActivator } from './types';
 
 const PYTHON = 'python';
@@ -97,9 +104,12 @@ export class LanguageServerExtensionActivator implements IExtensionActivator {
             return false;
         }
 
-        const testManagementService = this.services.get<IUnitTestManagementService>(IUnitTestManagementService);
-        testManagementService.activate()
-            .catch(ex => this.services.get<ILogger>(ILogger).logError('Failed to activate Unit Tests', ex));
+        this.startupCompleted.promise.then(() => {
+            const testManagementService = this.services.get<IUnitTestManagementService>(IUnitTestManagementService);
+            testManagementService.activate()
+                .then(() => testManagementService.activateCodeLenses(new SymbolProvider(this.languageClient!)))
+                .catch(ex => this.services.get<ILogger>(ILogger).logError('Failed to activate Unit Tests', ex));
+        }).ignoreErrors();
 
         return this.startLanguageServer(clientOptions);
     }
