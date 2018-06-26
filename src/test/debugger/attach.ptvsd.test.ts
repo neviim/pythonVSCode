@@ -16,7 +16,7 @@ import '../../client/common/extensions';
 import { IS_WINDOWS } from '../../client/common/platform/constants';
 import { IPlatformService } from '../../client/common/platform/types';
 import { PythonV2DebugConfigurationProvider } from '../../client/debugger';
-import { PTVSD_PATH } from '../../client/debugger/Common/constants';
+import { PTVSD_PATH, DebuggerTypeName } from '../../client/debugger/Common/constants';
 import { AttachRequestArguments, DebugOptions } from '../../client/debugger/Common/Contracts';
 import { IServiceContainer } from '../../client/ioc/types';
 import { PYTHON_PATH, sleep } from '../common';
@@ -64,7 +64,7 @@ suite('Attach Debugger - Experimental', () => {
 
         // Send initialize, attach
         const initializePromise = debugClient.initializeRequest({
-            adapterID: 'pythonExperimental',
+            adapterID: DebuggerTypeName,
             linesStartAt1: true,
             columnsStartAt1: true,
             supportsRunInTerminalRequest: true,
@@ -77,7 +77,7 @@ suite('Attach Debugger - Experimental', () => {
             request: 'attach',
             localRoot,
             remoteRoot,
-            type: 'pythonExperimental',
+            type: DebuggerTypeName,
             port: port,
             host: 'localhost',
             logToFile: false,

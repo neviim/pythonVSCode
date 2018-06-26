@@ -13,9 +13,10 @@ import { IDocumentManager, IWorkspaceService } from '../../../client/common/appl
 import { PYTHON_LANGUAGE } from '../../../client/common/constants';
 import { EnumEx } from '../../../client/common/enumUtils';
 import { IFileSystem, IPlatformService } from '../../../client/common/platform/types';
-import { PythonDebugConfigurationProvider, PythonV2DebugConfigurationProvider } from '../../../client/debugger';
+import { PythonV2DebugConfigurationProvider } from '../../../client/debugger';
 import { AttachRequestArguments, DebugOptions } from '../../../client/debugger/Common/Contracts';
 import { IServiceContainer } from '../../../client/ioc/types';
+import { DebuggerTypeName } from '../../../client/debugger/Common/constants';
 
 enum OS {
     Windows,
@@ -23,8 +24,7 @@ enum OS {
     Linux
 }
 [
-    { debugType: 'pythonExperimental', class: PythonV2DebugConfigurationProvider },
-    { debugType: 'python', class: PythonDebugConfigurationProvider }
+    { debugType: DebuggerTypeName, class: PythonV2DebugConfigurationProvider }
 ].forEach(provider => {
     EnumEx.getNamesAndValues(OS).forEach(os => {
         suite(`Debugging - Config Provider attach, ${provider.debugType}, OS = ${os.name}`, () => {
@@ -33,7 +33,7 @@ enum OS {
             let platformService: TypeMoq.IMock<IPlatformService>;
             let fileSystem: TypeMoq.IMock<IFileSystem>;
             const debugOptionsAvailable = [DebugOptions.RedirectOutput];
-            if (os.value === OS.Windows && provider.debugType === 'pythonExperimental') {
+            if (os.value === OS.Windows) {
                 debugOptionsAvailable.push(DebugOptions.FixFilePathCase);
                 debugOptionsAvailable.push(DebugOptions.WindowsClient);
             }
@@ -84,10 +84,6 @@ enum OS {
                 expect(Object.keys(debugConfig!)).to.have.lengthOf.above(3);
                 expect(debugConfig).to.have.property('request', 'attach');
                 expect(debugConfig).to.have.property('debugOptions').deep.equal(debugOptionsAvailable);
-                if (provider.debugType === 'python') {
-                    expect(debugConfig).to.have.property('localRoot');
-                    expect(debugConfig!.localRoot!.toLowerCase()).to.be.equal(__dirname.toLowerCase());
-                }
             });
             test('Defaults should be returned when an empty object is passed without Workspace Folder, no workspaces and active file', async () => {
                 const pythonFile = 'xyz.py';
@@ -96,16 +92,11 @@ enum OS {
                 setupWorkspaces([]);
 
                 const debugConfig = await debugProvider.resolveDebugConfiguration!(undefined, { request: 'attach' } as DebugConfiguration);
-                const filePath = Uri.file(path.dirname('')).fsPath;
 
                 expect(Object.keys(debugConfig!)).to.have.lengthOf.least(3);
                 expect(debugConfig).to.have.property('request', 'attach');
                 expect(debugConfig).to.have.property('debugOptions').deep.equal(debugOptionsAvailable);
                 expect(debugConfig).to.have.property('host', 'localhost');
-                if (provider.debugType === 'python') {
-                    expect(debugConfig).to.have.property('localRoot');
-                    expect(debugConfig!.localRoot!.toLowerCase()).to.be.equal(filePath.toLowerCase());
-                }
             });
             test('Defaults should be returned when an empty object is passed without Workspace Folder, no workspaces and no active file', async () => {
                 setupActiveEditor(undefined, PYTHON_LANGUAGE);
@@ -117,9 +108,6 @@ enum OS {
                 expect(debugConfig).to.have.property('request', 'attach');
                 expect(debugConfig).to.have.property('debugOptions').deep.equal(debugOptionsAvailable);
                 expect(debugConfig).to.have.property('host', 'localhost');
-                if (provider.debugType === 'python') {
-                    expect(debugConfig).to.not.have.property('localRoot');
-                }
             });
             test('Defaults should be returned when an empty object is passed without Workspace Folder, no workspaces and non python file', async () => {
                 const activeFile = 'xyz.js';
@@ -142,16 +130,11 @@ enum OS {
                 setupWorkspaces([defaultWorkspace]);
 
                 const debugConfig = await debugProvider.resolveDebugConfiguration!(undefined, { request: 'attach' } as DebugConfiguration);
-                const filePath = Uri.file(defaultWorkspace).fsPath;
 
                 expect(Object.keys(debugConfig!)).to.have.lengthOf.least(3);
                 expect(debugConfig).to.have.property('request', 'attach');
                 expect(debugConfig).to.have.property('debugOptions').deep.equal(debugOptionsAvailable);
                 expect(debugConfig).to.have.property('host', 'localhost');
-                if (provider.debugType === 'python') {
-                    expect(debugConfig).to.have.property('localRoot');
-                    expect(debugConfig!.localRoot!.toLowerCase()).to.be.equal(filePath.toLowerCase());
-                }
             });
             test('Ensure \'localRoot\' is left unaltered', async () => {
                 const activeFile = 'xyz.py';
@@ -177,12 +160,10 @@ enum OS {
                     const debugConfig = await debugProvider.resolveDebugConfiguration!(workspaceFolder, { localRoot, host, request: 'attach' } as any as DebugConfiguration);
 
                     expect(debugConfig).to.have.property('localRoot', localRoot);
-                    if (provider.debugType === 'pythonExperimental') {
-                        const pathMappings = (debugConfig as AttachRequestArguments).pathMappings;
-                        expect(pathMappings).to.be.lengthOf(1);
-                        expect(pathMappings![0].localRoot).to.be.equal(workspaceFolder.uri.fsPath);
-                        expect(pathMappings![0].remoteRoot).to.be.equal(workspaceFolder.uri.fsPath);
-                    }
+                    const pathMappings = (debugConfig as AttachRequestArguments).pathMappings;
+                    expect(pathMappings).to.be.lengthOf(1);
+                    expect(pathMappings![0].localRoot).to.be.equal(workspaceFolder.uri.fsPath);
+                    expect(pathMappings![0].remoteRoot).to.be.equal(workspaceFolder.uri.fsPath);
                 });
             });
             ['192.168.1.123', 'don.debugger.com'].forEach(host => {
@@ -197,16 +178,11 @@ enum OS {
                     const debugConfig = await debugProvider.resolveDebugConfiguration!(workspaceFolder, { localRoot, host, request: 'attach' } as any as DebugConfiguration);
 
                     expect(debugConfig).to.have.property('localRoot', localRoot);
-                    if (provider.debugType === 'pythonExperimental') {
-                        const pathMappings = (debugConfig as AttachRequestArguments).pathMappings;
-                        expect(pathMappings).to.be.lengthOf(0);
-                    }
+                    const pathMappings = (debugConfig as AttachRequestArguments).pathMappings;
+                    expect(pathMappings).to.be.lengthOf(0);
                 });
             });
-            test('Ensure \'localRoot\' and \'remoteRoot\' is used', async function () {
-                if (provider.debugType !== 'pythonExperimental') {
-                    return this.skip();
-                }
+            test('Ensure \'localRoot\' and \'remoteRoot\' is used', async () => {
                 const activeFile = 'xyz.py';
                 const workspaceFolder = createMoqWorkspaceFolder(__dirname);
                 setupActiveEditor(activeFile, PYTHON_LANGUAGE);
@@ -220,10 +196,7 @@ enum OS {
                 expect(debugConfig!.pathMappings).to.be.lengthOf(1);
                 expect(debugConfig!.pathMappings).to.deep.include({ localRoot, remoteRoot });
             });
-            test('Ensure \'localRoot\' and \'remoteRoot\' is used', async function () {
-                if (provider.debugType !== 'pythonExperimental') {
-                    return this.skip();
-                }
+            test('Ensure \'localRoot\' and \'remoteRoot\' is used', async () => {
                 const activeFile = 'xyz.py';
                 const workspaceFolder = createMoqWorkspaceFolder(__dirname);
                 setupActiveEditor(activeFile, PYTHON_LANGUAGE);
