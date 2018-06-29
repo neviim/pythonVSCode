@@ -16,7 +16,7 @@ import '../../client/common/extensions';
 import { IS_WINDOWS } from '../../client/common/platform/constants';
 import { IPlatformService } from '../../client/common/platform/types';
 import { PythonV2DebugConfigurationProvider } from '../../client/debugger';
-import { PTVSD_PATH, DebuggerTypeName } from '../../client/debugger/Common/constants';
+import { DebuggerTypeName, PTVSD_PATH } from '../../client/debugger/Common/constants';
 import { AttachRequestArguments, DebugOptions } from '../../client/debugger/Common/Contracts';
 import { IServiceContainer } from '../../client/ioc/types';
 import { PYTHON_PATH, sleep } from '../common';
@@ -25,7 +25,7 @@ import { continueDebugging, createDebugAdapter } from './utils';
 
 const fileToDebug = path.join(EXTENSION_ROOT_DIR, 'src', 'testMultiRootWkspc', 'workspace5', 'remoteDebugger-start-with-ptvsd.py');
 
-suite('Attach Debugger - Experimental', () => {
+suite('Attach Debugger', () => {
     let debugClient: DebugClient;
     let proc: ChildProcess;
     suiteSetup(initialize);

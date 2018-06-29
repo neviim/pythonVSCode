@@ -24,7 +24,7 @@ suite('Debugging - Banner', () => {
     let debugService: typemoq.IMock<IDebugService>;
     let appShell: typemoq.IMock<IApplicationShell>;
     let banner: IExperimentalDebuggerBanner;
-    const message = 'Can you please take 2 minutes to tell us how the Experimental Debugger is working for you?';
+    const message = 'Can you please take 2 minutes to tell us how the Debugger is working for you?';
     const yes = 'Yes, take survey now';
     const no = 'No thanks';
 
