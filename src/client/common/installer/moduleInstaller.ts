@@ -10,11 +10,10 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { IInterpreterService, InterpreterType } from '../../interpreter/contracts';
 import { IServiceContainer } from '../../ioc/types';
-import { PythonSettings } from '../configSettings';
 import { STANDARD_OUTPUT_CHANNEL } from '../constants';
 import { noop } from '../core.utils';
 import { ITerminalServiceFactory } from '../terminal/types';
-import { ExecutionInfo, IOutputChannel } from '../types';
+import { ExecutionInfo, IConfigurationService, IOutputChannel } from '../types';
 
 @injectable()
 export abstract class ModuleInstaller {
@@ -25,7 +24,8 @@ export abstract class ModuleInstaller {
 
         const executionInfoArgs = await this.processInstallArgs(executionInfo.args, resource);
         if (executionInfo.moduleName) {
-            const settings = PythonSettings.getInstance(resource);
+            const configService = this.serviceContainer.get<IConfigurationService>(IConfigurationService);
+            const settings = configService.getSettings(resource);
             const args = ['-m', executionInfo.moduleName].concat(executionInfoArgs);
 
             const pythonPath = settings.pythonPath;
