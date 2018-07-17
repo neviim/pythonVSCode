@@ -61,8 +61,8 @@ export abstract class ModuleInstaller {
         const currentInterpreter = await interpreterService.getActiveInterpreter(resource);
         if (currentInterpreter && currentInterpreter.version_info && currentInterpreter.version_info[0] === 2) {
             const newArgs = [...args];
-            // This command could be sent to the terminal, hence '<' needs to be escaped for Mac.
-            newArgs[indexOfPylint] = '"pylint<=2.0.0"';
+            // This command could be sent to the terminal, hence '<' needs to be escaped for UNIX.
+            newArgs[indexOfPylint] = '"pylint<2.0.0"';
             return newArgs;
         }
         return args;
