@@ -32,7 +32,6 @@ export class PipInstaller extends ModuleInstaller implements IModuleInstaller {
         }
         return {
             args: [...proxyArgs, 'install', '-U', moduleName],
-            execPath: '',
             moduleName: 'pip'
         };
     }
