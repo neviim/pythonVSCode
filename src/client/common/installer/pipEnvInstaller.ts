@@ -9,7 +9,7 @@ import { ExecutionInfo } from '../types';
 import { ModuleInstaller } from './moduleInstaller';
 import { IModuleInstaller } from './types';
 
-const pipenvName = 'pipenv';
+export const pipenvName = 'pipenv';
 
 @injectable()
 export class PipEnvInstaller extends ModuleInstaller implements IModuleInstaller {

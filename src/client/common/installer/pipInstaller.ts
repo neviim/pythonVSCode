@@ -2,8 +2,9 @@
 // Licensed under the MIT License.
 
 import { inject, injectable } from 'inversify';
-import { Uri, workspace } from 'vscode';
+import { Uri } from 'vscode';
 import { IServiceContainer } from '../../ioc/types';
+import { IWorkspaceService } from '../application/types';
 import { IPythonExecutionFactory } from '../process/types';
 import { ExecutionInfo } from '../types';
 import { ModuleInstaller } from './moduleInstaller';
@@ -25,7 +26,8 @@ export class PipInstaller extends ModuleInstaller implements IModuleInstaller {
     }
     protected async getExecutionInfo(moduleName: string, resource?: Uri): Promise<ExecutionInfo> {
         const proxyArgs: string[] = [];
-        const proxy = workspace.getConfiguration('http').get('proxy', '');
+        const workspaceService = this.serviceContainer.get<IWorkspaceService>(IWorkspaceService);
+        const proxy = workspaceService.getConfiguration('http').get('proxy', '');
         if (proxy.length > 0) {
             proxyArgs.push('--proxy');
             proxyArgs.push(proxy);
