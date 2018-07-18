@@ -3,14 +3,14 @@
 
 'use strict';
 
+import { BANNER_NAME_LS_SURVEY, BANNER_NAME_PROPOSE_LS, IPythonExtensionBanner } from '../common/types';
 import { IServiceManager } from '../ioc/types';
+import { LanguageServerSurveyBanner } from '../languageServices/languageServerSurveyBanner';
+import { ProposeLanguageServerBanner } from '../languageServices/proposeLanguageServerBanner';
 import { ExtensionActivationService } from './activationService';
 import { JediExtensionActivator } from './jedi';
 import { LanguageServerExtensionActivator } from './languageServer';
 import { ExtensionActivators, IExtensionActivationService, IExtensionActivator } from './types';
-import { IPythonExtensionBanner, BANNER_NAME_LS_SURVEY, BANNER_NAME_PROPOSE_LS } from '../common/types';
-import { LanguageServerSurveyBanner } from '../languageServices/languageServerSurveyBanner';
-import { ProposeLanguageServerBanner } from '../languageServices/proposeLanguageServerBanner';
 
 export function registerTypes(serviceManager: IServiceManager) {
     serviceManager.addSingleton<IExtensionActivationService>(IExtensionActivationService, ExtensionActivationService);
