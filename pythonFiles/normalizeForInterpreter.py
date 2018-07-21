@@ -76,9 +76,15 @@ def normalize_lines(source):
 
     """
     lines = source.splitlines(False)
+    # If we have two blank lines, then add two blank lines.
+    # Do not trim the spaces, if we have blank lines with spaces, its possible
+    # we have indented code.
+    if (len(lines) > 1 and len(''.join(lines[-2:])) == 0) or \
+        source.endswith('\n\n') or source.endswith('\r\n\r\n'):
+        trailing_newline = os.linesep * 2
     # Find out if we have any trailing blank lines
-    if len(lines[-1].strip()) == 0 or source.endswith('\n'):
-        trailing_newline = '\n'
+    elif len(lines[-1].strip()) == 0 or source.endswith('\n') or source.endswith('\r\n'):
+        trailing_newline = os.linesep
     else:
         trailing_newline = ''
 
