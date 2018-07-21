@@ -11,6 +11,7 @@ import { TerminalManager } from './application/terminalManager';
 import { IApplicationEnvironment, IApplicationShell, ICommandManager, IDebugService, IDocumentManager, ITerminalManager, IWorkspaceService } from './application/types';
 import { WorkspaceService } from './application/workspace';
 import { ConfigurationService } from './configuration/service';
+import { EditorUtils } from './editor';
 import { ProductInstaller } from './installer/productInstaller';
 import { Logger } from './logger';
 import { BrowserService } from './net/browser';
@@ -23,7 +24,7 @@ import { CommandPromptAndPowerShell } from './terminal/environmentActivationProv
 import { TerminalServiceFactory } from './terminal/factory';
 import { TerminalHelper } from './terminal/helper';
 import { ITerminalActivationCommandProvider, ITerminalHelper, ITerminalServiceFactory } from './terminal/types';
-import { IBrowserService, IConfigurationService, ICurrentProcess, IInstaller, ILogger, IPathUtils, IPersistentStateFactory, Is64Bit, IsWindows } from './types';
+import { IBrowserService, IConfigurationService, ICurrentProcess, IEditorUtils, IInstaller, ILogger, IPathUtils, IPersistentStateFactory, Is64Bit, IsWindows } from './types';
 
 export function registerTypes(serviceManager: IServiceManager) {
     serviceManager.addSingletonInstance<boolean>(IsWindows, IS_WINDOWS);
@@ -44,6 +45,7 @@ export function registerTypes(serviceManager: IServiceManager) {
     serviceManager.addSingleton<IDebugService>(IDebugService, DebugService);
     serviceManager.addSingleton<IApplicationEnvironment>(IApplicationEnvironment, ApplicationEnvironment);
     serviceManager.addSingleton<IBrowserService>(IBrowserService, BrowserService);
+    serviceManager.addSingleton<IEditorUtils>(IEditorUtils, EditorUtils);
 
     serviceManager.addSingleton<ITerminalHelper>(ITerminalHelper, TerminalHelper);
     serviceManager.addSingleton<ITerminalActivationCommandProvider>(ITerminalActivationCommandProvider, Bash, 'bashCShellFish');
