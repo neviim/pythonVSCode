@@ -3,11 +3,18 @@
 
 import { EventEmitter } from 'events';
 import { Container, decorate, injectable, interfaces } from 'inversify';
+import { noop } from '../common/core.utils';
 import { Abstract, IServiceContainer, Newable } from './types';
 
 // This needs to be done once, hence placed in a common location.
 // Used by UnitTestSockerServer and also the extension unit tests.
-decorate(injectable(), EventEmitter);
+// Place within try..catch, as this can only be done once. Possible another extesion
+// would perform this before our extension.
+try {
+    decorate(injectable(), EventEmitter);
+} catch {
+    noop();
+}
 
 @injectable()
 export class ServiceContainer implements IServiceContainer {
