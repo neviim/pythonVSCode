@@ -78,9 +78,10 @@ export interface IInterpreterService {
     getInterpreters(resource?: Uri): Promise<PythonInterpreter[]>;
     autoSetInterpreter(): Promise<void>;
     getActiveInterpreter(resource?: Uri): Promise<PythonInterpreter | undefined>;
-    getInterpreterDetails(pythonPath: string): Promise<Partial<PythonInterpreter>>;
+    getInterpreterDetails(pythonPath: string): Promise<undefined | Partial<PythonInterpreter>>;
     refresh(): Promise<void>;
     initialize(): void;
+    isMacDefaultPythonPath(pythonPath: string): Boolean;
 }
 
 export const IInterpreterDisplay = Symbol('IInterpreterDisplay');
@@ -102,4 +103,9 @@ export interface IInterpreterHelper {
 export const IPipEnvService = Symbol('IPipEnvService');
 export interface IPipEnvService {
     isRelatedPipEnvironment(dir: string, pythonPath: string): Promise<boolean>;
+}
+
+export const IInterpreterLocatorHelper = Symbol('IInterpreterLocatorHelper');
+export interface IInterpreterLocatorHelper {
+    mergeInterpreters(interpreters: PythonInterpreter[]): PythonInterpreter[];
 }
