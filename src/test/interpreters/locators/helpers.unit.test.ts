@@ -91,15 +91,7 @@ suite('Interpreters - Locators Helper', () => {
             platform.setup(p => p.isMac).returns(() => os.value === OS.Mac);
             fs
                 .setup(f => f.arePathsSame(TypeMoq.It.isAny(), TypeMoq.It.isAny()))
-                .returns((a, b) => {
-                    if (a === b && a === path.join('users', 'python', 'bin', '3.6')) {
-                        return true;
-                    }
-                    if (a === b && a === path.join('users', 'python', 'bin', '3.7')) {
-                        return true;
-                    }
-                    return false;
-                })
+                .returns((a, b) => a === b)
                 .verifiable(TypeMoq.Times.atLeastOnce());
 
             const interpreters: PythonInterpreter[] = [];
@@ -109,7 +101,7 @@ suite('Interpreters - Locators Helper', () => {
                 const interpreter = {
                     architecture: Architecture.Unknown,
                     displayName: name,
-                    path: path.join('users', `python${name}`, 'bin', name + index.toString()),
+                    path: path.join('users', `python${name}${index}`, 'bin', name + index.toString()),
                     sysPrefix: name,
                     sysVersion: name,
                     type: InterpreterType.Unknown,
@@ -119,7 +111,7 @@ suite('Interpreters - Locators Helper', () => {
                 interpreters.push(interpreter);
                 expectedInterpreters.push(interpreter);
             });
-            // These are duplicates.
+            // Same versions, but different executables.
             ['3.6', '3.6', '3.7', '3.7'].forEach((name, index) => {
                 const interpreter = {
                     architecture: Architecture.Unknown,
@@ -140,30 +132,15 @@ suite('Interpreters - Locators Helper', () => {
                     sysVersion: name,
                     type: InterpreterType.Unknown,
                     version: name,
-                    version_info: [3, parseInt(name.substr(-1), 10), 0, 'final'] as PythonVersionInfo
+                    version_info: interpreter.version_info
                 };
 
-                interpreters.push(duplicateInterpreter);
                 interpreters.push(interpreter);
+                interpreters.push(duplicateInterpreter);
                 if (index % 2 === 1) {
                     expectedInterpreters.push(interpreter);
                 }
             });
-            // // Same versions but in the same directory.
-            // ['3.6', '2.7'].forEach(name => {
-            //     const interpreter = {
-            //         architecture: Architecture.Unknown,
-            //         displayName: name,
-            //         path: path.join('users', 'python', 'bin', '3.7'),
-            //         sysPrefix: name,
-            //         sysVersion: name,
-            //         type: InterpreterType.Unknown,
-            //         version: name,
-            //         version_info: [2, 7, 0, 'final'] as PythonVersionInfo
-            //     };
-            //     interpreters.push(interpreter);
-            //     expectedInterpreters.push(interpreter);
-            // });
 
             const items = helper.mergeInterpreters(interpreters);
 
@@ -171,6 +148,51 @@ suite('Interpreters - Locators Helper', () => {
             platform.verifyAll();
             fs.verifyAll();
             expect(items).to.be.lengthOf(expectedInterpreters.length);
+            expect(items).to.be.deep.equal(expectedInterpreters);
+        });
+    });
+    EnumEx.getNamesAndValues<OS>(OS).forEach(os => {
+        test(`Ensure interpreter types are identified from other locators (${os.name})`, async () => {
+            interpreterService
+                .setup(i => i.isMacDefaultPythonPath(TypeMoq.It.isAny()))
+                .returns(() => false);
+            platform.setup(p => p.isWindows).returns(() => os.value === OS.Windows);
+            platform.setup(p => p.isLinux).returns(() => os.value === OS.Linux);
+            platform.setup(p => p.isMac).returns(() => os.value === OS.Mac);
+            fs
+                .setup(f => f.arePathsSame(TypeMoq.It.isAny(), TypeMoq.It.isAny()))
+                .returns((a, b) => a === b && a === path.join('users', 'python', 'bin'))
+                .verifiable(TypeMoq.Times.atLeastOnce());
+
+            const interpreters: PythonInterpreter[] = [];
+            const expectedInterpreters: PythonInterpreter[] = [];
+            ['3.6', '3.6'].forEach((name, index) => {
+                // Ensure the type in the first item is 'Unknown',
+                // and type in second item is known (e.g. Conda).
+                const type = index === 0 ? InterpreterType.Unknown : InterpreterType.PipEnv;
+                const interpreter = {
+                    architecture: Architecture.Unknown,
+                    displayName: name,
+                    path: path.join('users', 'python', 'bin', 'python.exe'),
+                    sysPrefix: name,
+                    sysVersion: name,
+                    type,
+                    version: name,
+                    version_info: [3, parseInt(name.substr(-1), 10), 0, 'final'] as PythonVersionInfo
+                };
+                interpreters.push(interpreter);
+
+                if (index === 1) {
+                    expectedInterpreters.push(interpreter);
+                }
+            });
+
+            const items = helper.mergeInterpreters(interpreters);
+
+            interpreterService.verifyAll();
+            platform.verifyAll();
+            fs.verifyAll();
+            expect(items).to.be.lengthOf(1);
             expect(items).to.be.deep.equal(expectedInterpreters);
         });
     });

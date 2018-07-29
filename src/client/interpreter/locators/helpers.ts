@@ -48,14 +48,11 @@ export class InterpreterLocatorHelper implements IInterpreterLocatorHelper {
                 }
                 const currentVersion = Array.isArray(current.version_info) ? current.version_info.join('.') : undefined;
                 const existingItem = accumulator.find(item => {
-                    if (this.fs.arePathsSame(item.path, current.path)) {
-                        return true;
-                    }
                     // If same version and same base path, then ignore.
                     // Could be Python 3.6 with path = python.exe, and Python 3.6 and path = python3.exe.
                     if (Array.isArray(item.version_info) && item.version_info.join('.') === currentVersion &&
                         item.path && current.path &&
-                        this.fs.arePathsSame(path.basename(item.path), path.basename(current.path))) {
+                        this.fs.arePathsSame(path.dirname(item.path), path.dirname(current.path))) {
                         return true;
                     }
                     return false;
