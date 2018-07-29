@@ -129,10 +129,6 @@ export class InterpreterService implements Disposable, IInterpreterService {
             type: type
         };
     }
-    public isMacDefaultPythonPath(pythonPath: string) {
-        return pythonPath === 'python' || pythonPath === '/usr/bin/python';
-    }
-
     private async shouldAutoSetInterpreter(): Promise<boolean> {
         const activeWorkspace = this.helper.getActiveWorkspaceUri();
         if (!activeWorkspace) {

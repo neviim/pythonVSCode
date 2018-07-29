@@ -11,7 +11,7 @@ import * as TypeMoq from 'typemoq';
 import { EnumEx } from '../../../client/common/enumUtils';
 import { Architecture, IFileSystem, IPlatformService } from '../../../client/common/platform/types';
 import { PythonVersionInfo } from '../../../client/common/process/types';
-import { IInterpreterLocatorHelper, IInterpreterService, InterpreterType, PythonInterpreter } from '../../../client/interpreter/contracts';
+import { IInterpreterHelper, IInterpreterLocatorHelper, InterpreterType, PythonInterpreter } from '../../../client/interpreter/contracts';
 import { InterpreterLocatorHelper } from '../../../client/interpreter/locators/helpers';
 import { IServiceContainer } from '../../../client/ioc/types';
 
@@ -26,15 +26,15 @@ suite('Interpreters - Locators Helper', () => {
     let platform: TypeMoq.IMock<IPlatformService>;
     let helper: IInterpreterLocatorHelper;
     let fs: TypeMoq.IMock<IFileSystem>;
-    let interpreterService: TypeMoq.IMock<IInterpreterService>;
+    let interpreterServiceHelper: TypeMoq.IMock<IInterpreterHelper>;
     setup(() => {
         serviceContainer = TypeMoq.Mock.ofType<IServiceContainer>();
         platform = TypeMoq.Mock.ofType<IPlatformService>();
         fs = TypeMoq.Mock.ofType<IFileSystem>();
-        interpreterService = TypeMoq.Mock.ofType<IInterpreterService>();
+        interpreterServiceHelper = TypeMoq.Mock.ofType<IInterpreterHelper>();
         serviceContainer.setup(c => c.get(TypeMoq.It.isValue(IPlatformService))).returns(() => platform.object);
         serviceContainer.setup(c => c.get(TypeMoq.It.isValue(IFileSystem))).returns(() => fs.object);
-        serviceContainer.setup(c => c.get(TypeMoq.It.isValue(IInterpreterService))).returns(() => interpreterService.object);
+        serviceContainer.setup(c => c.get(TypeMoq.It.isValue(IInterpreterHelper))).returns(() => interpreterServiceHelper.object);
 
         helper = new InterpreterLocatorHelper(serviceContainer.object);
     });
@@ -65,7 +65,7 @@ suite('Interpreters - Locators Helper', () => {
             interpreters.push(interpreter);
 
             // Treat 'mac' as as mac interpreter.
-            interpreterService
+            interpreterServiceHelper
                 .setup(i => i.isMacDefaultPythonPath(TypeMoq.It.isValue(interpreter.path)))
                 .returns(() => name === 'mac')
                 .verifiable(TypeMoq.Times.once());
@@ -75,7 +75,7 @@ suite('Interpreters - Locators Helper', () => {
 
         const items = helper.mergeInterpreters(interpreters);
 
-        interpreterService.verifyAll();
+        interpreterServiceHelper.verifyAll();
         platform.verifyAll();
         fs.verifyAll();
         expect(items).to.be.lengthOf(3);
@@ -83,7 +83,7 @@ suite('Interpreters - Locators Helper', () => {
     });
     EnumEx.getNamesAndValues<OS>(OS).forEach(os => {
         test(`Ensure duplicates are removed (same version and same interpreter directory on ${os.name})`, async () => {
-            interpreterService
+            interpreterServiceHelper
                 .setup(i => i.isMacDefaultPythonPath(TypeMoq.It.isAny()))
                 .returns(() => false);
             platform.setup(p => p.isWindows).returns(() => os.value === OS.Windows);
@@ -144,7 +144,7 @@ suite('Interpreters - Locators Helper', () => {
 
             const items = helper.mergeInterpreters(interpreters);
 
-            interpreterService.verifyAll();
+            interpreterServiceHelper.verifyAll();
             platform.verifyAll();
             fs.verifyAll();
             expect(items).to.be.lengthOf(expectedInterpreters.length);
@@ -153,7 +153,7 @@ suite('Interpreters - Locators Helper', () => {
     });
     EnumEx.getNamesAndValues<OS>(OS).forEach(os => {
         test(`Ensure interpreter types are identified from other locators (${os.name})`, async () => {
-            interpreterService
+            interpreterServiceHelper
                 .setup(i => i.isMacDefaultPythonPath(TypeMoq.It.isAny()))
                 .returns(() => false);
             platform.setup(p => p.isWindows).returns(() => os.value === OS.Windows);
@@ -189,7 +189,7 @@ suite('Interpreters - Locators Helper', () => {
 
             const items = helper.mergeInterpreters(interpreters);
 
-            interpreterService.verifyAll();
+            interpreterServiceHelper.verifyAll();
             platform.verifyAll();
             fs.verifyAll();
             expect(items).to.be.lengthOf(1);

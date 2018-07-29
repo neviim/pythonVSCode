@@ -4,7 +4,7 @@ import { getArchitectureDislayName } from '../../common/platform/registry';
 import { IFileSystem, IPlatformService } from '../../common/platform/types';
 import { fsReaddirAsync, IS_WINDOWS } from '../../common/utils';
 import { IServiceContainer } from '../../ioc/types';
-import { IInterpreterLocatorHelper, IInterpreterService, InterpreterType, PythonInterpreter } from '../contracts';
+import { IInterpreterHelper, IInterpreterLocatorHelper, InterpreterType, PythonInterpreter } from '../contracts';
 
 const CheckPythonInterpreterRegEx = IS_WINDOWS ? /^python(\d+(.\d+)?)?\.exe$/ : /^python(\d+(.\d+)?)?$/;
 
@@ -30,11 +30,11 @@ export function fixInterpreterDisplayName(item: PythonInterpreter) {
 export class InterpreterLocatorHelper implements IInterpreterLocatorHelper {
     private readonly platform: IPlatformService;
     private readonly fs: IFileSystem;
-    private readonly interpreterService: IInterpreterService;
+    private readonly helper: IInterpreterHelper;
 
     constructor(@inject(IServiceContainer) serviceContainer: IServiceContainer) {
         this.platform = serviceContainer.get<IPlatformService>(IPlatformService);
-        this.interpreterService = serviceContainer.get<IInterpreterService>(IInterpreterService);
+        this.helper = serviceContainer.get<IInterpreterHelper>(IInterpreterHelper);
         this.fs = serviceContainer.get<IFileSystem>(IFileSystem);
     }
     public mergeInterpreters(interpreters: PythonInterpreter[]) {
@@ -43,7 +43,7 @@ export class InterpreterLocatorHelper implements IInterpreterLocatorHelper {
             .map(fixInterpreterDisplayName)
             .map(item => { item.path = path.normalize(item.path); return item; })
             .reduce<PythonInterpreter[]>((accumulator, current) => {
-                if (this.platform.isMac && this.interpreterService.isMacDefaultPythonPath(current.path)) {
+                if (this.platform.isMac && this.helper.isMacDefaultPythonPath(current.path)) {
                     return accumulator;
                 }
                 const currentVersion = Array.isArray(current.version_info) ? current.version_info.join('.') : undefined;
