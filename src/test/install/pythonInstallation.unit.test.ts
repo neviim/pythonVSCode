@@ -14,7 +14,6 @@ import { InterpreterHelper } from '../../client/interpreter/helpers';
 import { ServiceContainer } from '../../client/ioc/container';
 import { ServiceManager } from '../../client/ioc/serviceManager';
 import { IServiceContainer } from '../../client/ioc/types';
-import { closeActiveWindows, initialize, initializeTest } from '../initialize';
 
 const info: PythonInterpreter = {
     architecture: Architecture.Unknown,
@@ -57,9 +56,9 @@ class TestContext {
         interpreterService
             .setup(x => x.getActiveInterpreter(TypeMoq.It.isAny()))
             .returns(() => new Promise<PythonInterpreter>((resolve, reject) => resolve(activeInterpreter)));
-        const helper = new InterpreterHelper(this.serviceContainer);
         this.serviceManager.addSingletonInstance<IFileSystem>(IFileSystem, TypeMoq.Mock.ofType<IFileSystem>().object);
         this.serviceManager.addSingletonInstance<IPersistentStateFactory>(IPersistentStateFactory, TypeMoq.Mock.ofType<IPersistentStateFactory>().object);
+        const helper = new InterpreterHelper(this.serviceContainer);
         this.serviceManager.addSingletonInstance<IInterpreterHelper>(IInterpreterHelper, helper);
         this.serviceManager.addSingletonInstance<IPlatformService>(IPlatformService, this.platform.object);
         this.serviceManager.addSingletonInstance<IApplicationShell>(IApplicationShell, this.appShell.object);
@@ -74,13 +73,6 @@ class TestContext {
 
 // tslint:disable-next-line:max-func-body-length
 suite('Installation', () => {
-    suiteSetup(async () => {
-        await initialize();
-    });
-    setup(initializeTest);
-    suiteTeardown(closeActiveWindows);
-    teardown(closeActiveWindows);
-
     test('Disable checks', async () => {
         const c = new TestContext(false);
         let showErrorMessageCalled = false;
