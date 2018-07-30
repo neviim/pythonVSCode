@@ -7,9 +7,10 @@ import { Container } from 'inversify';
 import * as TypeMoq from 'typemoq';
 import { IApplicationShell } from '../../client/common/application/types';
 import { PythonInstaller } from '../../client/common/installer/pythonInstallation';
-import { Architecture, IPlatformService } from '../../client/common/platform/types';
-import { IPythonSettings } from '../../client/common/types';
-import { IInterpreterLocatorService, IInterpreterService, InterpreterType, PythonInterpreter } from '../../client/interpreter/contracts';
+import { Architecture, IFileSystem, IPlatformService } from '../../client/common/platform/types';
+import { IPersistentStateFactory, IPythonSettings } from '../../client/common/types';
+import { IInterpreterHelper, IInterpreterLocatorService, IInterpreterService, InterpreterType, PythonInterpreter } from '../../client/interpreter/contracts';
+import { InterpreterHelper } from '../../client/interpreter/helpers';
 import { ServiceContainer } from '../../client/ioc/container';
 import { ServiceManager } from '../../client/ioc/serviceManager';
 import { IServiceContainer } from '../../client/ioc/types';
@@ -56,7 +57,10 @@ class TestContext {
         interpreterService
             .setup(x => x.getActiveInterpreter(TypeMoq.It.isAny()))
             .returns(() => new Promise<PythonInterpreter>((resolve, reject) => resolve(activeInterpreter)));
-
+        const helper = new InterpreterHelper(this.serviceContainer);
+        this.serviceManager.addSingletonInstance<IFileSystem>(IFileSystem, TypeMoq.Mock.ofType<IFileSystem>().object);
+        this.serviceManager.addSingletonInstance<IPersistentStateFactory>(IPersistentStateFactory, TypeMoq.Mock.ofType<IPersistentStateFactory>().object);
+        this.serviceManager.addSingletonInstance<IInterpreterHelper>(IInterpreterHelper, helper);
         this.serviceManager.addSingletonInstance<IPlatformService>(IPlatformService, this.platform.object);
         this.serviceManager.addSingletonInstance<IApplicationShell>(IApplicationShell, this.appShell.object);
         this.serviceManager.addSingletonInstance<IInterpreterLocatorService>(IInterpreterLocatorService, this.locator.object);
