@@ -2,6 +2,7 @@ import { ChildProcess, spawn } from 'child_process';
 import * as path from 'path';
 import { DebugSession, OutputEvent } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
+import { noop } from '../../common/core.utils';
 import { open } from '../../common/open';
 import { PathUtils } from '../../common/platform/pathUtils';
 import { CurrentProcess } from '../../common/process/currentProcess';
@@ -15,11 +16,11 @@ import { LocalDebugServerV2 } from '../DebugServers/LocalDebugServerV2';
 import { IDebugLauncherScriptProvider } from '../types';
 import { DebugClient, DebugType } from './DebugClient';
 import { DebugClientHelper } from './helper';
-import { noop } from '../../common/core.utils';
 
 const VALID_DEBUG_OPTIONS = [
     'RedirectOutput',
     'DebugStdLib',
+    'stopOnEntry',
     'BreakOnSystemExitZero',
     'DjangoDebugging',
     'Django'];
