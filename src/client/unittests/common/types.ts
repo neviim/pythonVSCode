@@ -24,6 +24,8 @@ export type TestRunOptions = {
     debug?: boolean;
 };
 
+export type UnitTestParserOptions = TestDiscoveryOptions & { startDirectory: string };
+
 export type TestFolder = TestResult & {
     name: string;
     testFiles: TestFile[];
@@ -269,3 +271,8 @@ export const IXUnitParser = Symbol('IXUnitParser');
 export interface IXUnitParser {
     updateResultsFromXmlLogFile(tests: Tests, outputXmlFile: string, passCalculationFormulae: PassCalculationFormulae): Promise<void>;
 }
+
+export type PythonVersionInformation = {
+    major: number;
+    minor: number;
+};

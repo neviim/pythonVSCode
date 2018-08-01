@@ -1,17 +1,19 @@
 # Contributing to the Python extension for Visual Studio Code
 
 
- 
+
 
 ---
 
-| macOS/Windows CI | Linux CI | Rolling CI | ptvsd master CI | Code Coverage |
-|-|-|-|-|-|
-|[![Build status - CI](https://vscode-python.visualstudio.com/VSCode-Python/_apis/build/status/VSCode-Python-CI)](https://vscode-python.visualstudio.com/VSCode-Python/VSCode-Python%20Team/_build/results?buildId=375&view=logs) | [![Build Status (Travis)](https://travis-ci.org/Microsoft/vscode-python.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-python) | [![Build status - Rolling](https://vscode-python.visualstudio.com/VSCode-Python/_apis/build/status/VSCode-Python-Rolling-CI)](https://vscode-python.visualstudio.com/3dc2a9b3-d195-4dba-9886-844383409c6c/_build/index?buildId=378) | [![Build status - PTVSD](https://vscode-python.visualstudio.com/VSCode-Python/_apis/build/status/VSCode-Python-ptvsd_master-CI)](https://vscode-python.visualstudio.com/3dc2a9b3-d195-4dba-9886-844383409c6c/_build/index?buildId=361) | [![codecov](https://codecov.io/gh/Microsoft/vscode-python/branch/master/graph/badge.svg)](https://codecov.io/gh/Microsoft/vscode-python)|
+| macOS/Windows CI | Linux CI | Rolling CI (macOS/Windows) | Code Coverage |
+|-|-|-|-|
+|[![Build status](https://vscode-python.visualstudio.com/VSCode-Python/_apis/build/status/VSCode-Python-CI)](https://vscode-python.visualstudio.com/VSCode-Python/_build/latest?definitionId=4) | [![Build Status (Travis)](https://travis-ci.org/Microsoft/vscode-python.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-python/branches) | [![Build status](https://vscode-python.visualstudio.com/VSCode-Python/_apis/build/status/VSCode-Python-Rolling-CI)](https://vscode-python.visualstudio.com/VSCode-Python/_build/latest?definitionId=9) | [![codecov](https://codecov.io/gh/Microsoft/vscode-python/branch/master/graph/badge.svg)](https://codecov.io/gh/Microsoft/vscode-python)|
+
+[[Development build](https://pvsc.blob.core.windows.net/extension-builds/ms-python-insiders.vsix)]
+
 ---
 
-# Contributing to Microsoft Python Analysis Engine
-[Contributing to Python Analysis Engine](https://github.com/Microsoft/vscode-python/blob/master/CONTRIBUTING%20-%20PYTHON_ANALYSIS.md)
+[[Contributing to Python Analysis Engine](https://github.com/Microsoft/vscode-python/blob/master/CONTRIBUTING%20-%20PYTHON_ANALYSIS.md) is covered in a separate document.]
 
 ## Contributing a pull request
 
@@ -28,7 +30,7 @@
 ### Setup
 
 ```shell
-git clone https://github.com/microsoft/vscode-python
+git clone --recurse-submodules https://github.com/microsoft/vscode-python
 cd vscode-python
 npm install
 ```
@@ -136,6 +138,8 @@ be set on all open issues (otherwise the issue is not considered triaged):
 These labels cover what is blocking the issue from closing, what is affected by
 the issue, and what kind of issue it is.
 
+It is also important to make the title accurate. People often write very brief, quick titles or ones that describe what they think the problem is. By updating the title to be appropriately descriptive for what _you_ think the issue is, you not only make finding older issues easier, but you also help make sure that you and the original reporter agree on what the issue is.
+
 #### Closed issues
 
 When an issue is closed  by a pull request we add a
@@ -172,8 +176,7 @@ build of the extension onto a cloud storage provider.
 If you are interested in helping us test our development builds or would like
 to stay ahead of the curve, then please feel free to download and install the
 extension from the following
-[location](https://pvsc.blob.core.windows.net/extension-builds/ms-python-insiders.vsix)
-(if the CI build is passing: [![Build Status](https://travis-ci.org/Microsoft/vscode-python.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-python)).
+[location](https://pvsc.blob.core.windows.net/extension-builds/ms-python-insiders.vsix).
 Once you have downloaded the
 [ms-python-insiders.vsix](https://pvsc.blob.core.windows.net/extension-builds/ms-python-insiders.vsix)
 file, please follow the instructions on

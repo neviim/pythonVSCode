@@ -8,7 +8,8 @@ import { inject, injectable } from 'inversify';
 import { Disposable } from 'vscode';
 import { IApplicationEnvironment, IApplicationShell, IDebugService } from '../common/application/types';
 import '../common/extensions';
-import { IBrowserService, IDisposableRegistry, ILogger, IPersistentStateFactory } from '../common/types';
+import { IBrowserService, IDisposableRegistry, IExperimentalDebuggerBanner,
+    ILogger, IPersistentStateFactory } from '../common/types';
 import { IServiceContainer } from '../ioc/types';
 import { DebuggerTypeName } from './Common/constants';
 import { IExperimentalDebuggerBanner } from './types';

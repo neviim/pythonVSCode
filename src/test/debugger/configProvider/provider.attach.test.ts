@@ -36,6 +36,8 @@ enum OS {
             if (os.value === OS.Windows) {
                 debugOptionsAvailable.push(DebugOptions.FixFilePathCase);
                 debugOptionsAvailable.push(DebugOptions.WindowsClient);
+            } else {
+                debugOptionsAvailable.push(DebugOptions.UnixClient);
             }
             setup(() => {
                 serviceContainer = TypeMoq.Mock.ofType<IServiceContainer>();

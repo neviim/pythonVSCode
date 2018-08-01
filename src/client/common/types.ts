@@ -118,7 +118,7 @@ export interface IPythonSettings {
     readonly pythonPath: string;
     readonly venvPath: string;
     readonly venvFolders: string[];
-    readonly downloadCodeAnalysis: boolean;
+    readonly downloadLanguageServer: boolean;
     readonly jediEnabled: boolean;
     readonly jediPath: string;
     readonly jediMemoryLimit: number;
@@ -133,6 +133,7 @@ export interface IPythonSettings {
     readonly envFile: string;
     readonly disableInstallationChecks: boolean;
     readonly globalModuleInstallation: boolean;
+    readonly analysis: IAnalysisSettings;
 }
 export interface ISortImportSettings {
     readonly path: string;
@@ -235,13 +236,17 @@ export interface ITerminalSettings {
     readonly launchArgs: string[];
     readonly activateEnvironment: boolean;
 }
-export interface IPythonAnalysisEngineSettings {
-    readonly showAdvancedMembers: boolean;
+export interface IAnalysisSettings {
+    readonly openFilesOnly: boolean;
     readonly typeshedPaths: string[];
+    readonly errors: string[];
+    readonly warnings: string[];
+    readonly information: string[];
+    readonly disabled: string[];
+    readonly traceLogging: boolean;
 }
 
 export const IConfigurationService = Symbol('IConfigurationService');
-
 export interface IConfigurationService {
     getSettings(resource?: Uri): IPythonSettings;
     isTestExecution(): boolean;
@@ -261,3 +266,13 @@ export const IBrowserService = Symbol('IBrowserService');
 export interface IBrowserService {
     launch(url: string): void;
 }
+
+export const IPythonExtensionBanner = Symbol('IPythonExtensionBanner');
+export interface IPythonExtensionBanner {
+    enabled: boolean;
+    shownCount: Promise<number>;
+    optionLabels: string[];
+    showBanner(): Promise<void>;
+}
+export const BANNER_NAME_LS_SURVEY: string = 'LSSurveyBanner';
+export const BANNER_NAME_PROPOSE_LS: string = 'ProposeLS';

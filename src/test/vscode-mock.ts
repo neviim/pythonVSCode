@@ -63,6 +63,8 @@ mockedVSCode.SnippetString = vscodeMocks.vscMockExtHostedTypes.SnippetString;
 mockedVSCode.EventEmitter = vscodeMocks.vscMock.EventEmitter;
 mockedVSCode.ConfigurationTarget = vscodeMocks.vscMockExtHostedTypes.ConfigurationTarget;
 mockedVSCode.StatusBarAlignment = vscodeMocks.vscMockExtHostedTypes.StatusBarAlignment;
+mockedVSCode.SignatureHelp = vscodeMocks.vscMockExtHostedTypes.SignatureHelp;
+mockedVSCode.DocumentLink = vscodeMocks.vscMockExtHostedTypes.DocumentLink;
 
 // This API is used in src/client/telemetry/telemetry.ts
 const extensions = TypeMoq.Mock.ofType<typeof vscode.extensions>();
