@@ -1,6 +1,5 @@
 'use strict';
 
-import * as fs from 'fs-extra';
 import * as net from 'net';
 import { EOL } from 'os';
 import { DebugSession, OutputEvent } from 'vscode-debugadapter';
@@ -25,9 +24,7 @@ export class LocalDebugServer extends BaseDebugServer {
 
     public async Start(): Promise<IDebugServer> {
         return new Promise<IDebugServer>((resolve, reject) => {
-            fs.appendFileSync('/Users/don/.vscode-insiders/extensions/pythonVSCode/debug1.log', '\n4\n');
             let connectedResolve = this.debugClientConnected.resolve.bind(this.debugClientConnected);
-            fs.appendFileSync('/Users/don/.vscode-insiders/extensions/pythonVSCode/debug1.log', '\n5\n');
             let connected = false;
             let disconnected = false;
             this.debugSocketServer = net.createServer(c => {
