@@ -12,7 +12,7 @@ import { Abstract, IServiceContainer, Newable } from './types';
 try {
     decorate(injectable(), EventEmitter);
 } catch (ex) {
-    console.warn('Failed to decorate EventEmitter for DI (most likely already decorate by another Extension)', ex);
+    console.warn('Failed to decorate EventEmitter for DI (possibly already decorated by another Extension)', ex);
 }
 
 @injectable()
