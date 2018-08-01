@@ -8,8 +8,8 @@ import { Abstract, IServiceContainer, Newable } from './types';
 
 // This needs to be done once, hence placed in a common location.
 // Used by UnitTestSockerServer and also the extension unit tests.
-// Place within try..catch, as this can only be done once. Possible another extesion
-// would perform this before our extension.
+// Place within try..catch, as this can only be done once (it's
+// possible another extesion would perform this before our extension).
 try {
     decorate(injectable(), EventEmitter);
 } catch {
