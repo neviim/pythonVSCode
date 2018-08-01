@@ -3,7 +3,6 @@
 
 import { EventEmitter } from 'events';
 import { Container, decorate, injectable, interfaces } from 'inversify';
-import { noop } from '../common/core.utils';
 import { Abstract, IServiceContainer, Newable } from './types';
 
 // This needs to be done once, hence placed in a common location.
@@ -12,8 +11,8 @@ import { Abstract, IServiceContainer, Newable } from './types';
 // possible another extesion would perform this before our extension).
 try {
     decorate(injectable(), EventEmitter);
-} catch {
-    noop();
+} catch (ex) {
+    console.warn('Failed to decorate EventEmitter for DI (most likely already decorate by another Extension)', ex);
 }
 
 @injectable()
