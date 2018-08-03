@@ -324,6 +324,18 @@
                         }
                     },
                     {
+                        "label": "Python: Module",
+                        "description": "%python.snippet.launch.module.description%",
+                        "body": {
+                            "name": "Python: Module",
+                            "type": "python",
+                            "request": "launch",
+                            "module": "module.name",
+                            "console": "integratedTerminal"
+
+                        }
+                    },
+                    {
                         "label": "Python: Django",
                         "description": "%python.snippet.launch.django.description%",
                         "body": {
@@ -645,6 +657,13 @@
                         "host": "localhost"
                     },
                     {
+                        "name": "Python: Module",
+                        "type": "python",
+                        "request": "launch",
+                        "module": "module.name",
+                        "console": "integratedTerminal"
+                    },
+                    {
                         "name": "Python: Django",
                         "type": "python",
                         "request": "launch",
@@ -799,7 +818,7 @@
                 },
                 "python.jediEnabled": {
                     "type": "boolean",
-                    "default": true,
+                    "default": false,
                     "description": "Enables Jedi as IntelliSense engine instead of Microsoft Python Analysis Engine.",
                     "scope": "resource"
                 },
